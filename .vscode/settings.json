@@ -1,0 +1,10 @@
+{
+	"files.associations": {
+		"*.a": "cpp",
+		"ft_printf.h": "c",
+		"stdlib.h": "c",
+		"libft.h": "c",
+		"functional": "c",
+		"algorithm": "c"
+	}
+}
