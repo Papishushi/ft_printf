@@ -6,7 +6,7 @@
 /*   By: dmoliner <dmoliner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/14 13:12:07 by dmoliner          #+#    #+#             */
-/*   Updated: 2023/07/20 17:03:13 by dmoliner         ###   ########.fr       */
+/*   Updated: 2023/07/23 13:08:01 by dmoliner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,17 @@ struct s_print_handle	*parse_flags(char *input, va_list *flag_list)
 
 	i = 0;
 	buff = calloc(4096, sizeof(char *));
-	if (!buff)
+	handle = calloc(1, sizeof(struct s_print_handle));
+	if (!buff || !handle)
+	{
+		free(input);
 		return (NULL);
-	handle = malloc(sizeof(struct s_print_handle));
-	if (!handle)
-		return (NULL);
-	handle->input = ft_strdup(input);
-	while (input && *input)
+	}
+	if (input == NULL)
+		handle->input = NULL;
+	else
+		handle->input = ft_strdup(input);
+	while (input)
 	{
 		flag = ft_get_next_segment(input, '%');
 		input = ft_chop_last_segment(input, '%');
@@ -74,11 +78,16 @@ int	get_parsed_flags_lenght(const struct s_print_handle *handle)
 	i = 0;
 	lenght = 0;
 	while (i < handle->lenght)
-		lenght += ft_strlen(handle->parsed_flags[i++]);
+	{
+		if (handle->parsed_flags[i] != NULL)
+			lenght += ft_strlen(handle->parsed_flags[i]);
+		i++;
+	}
+
 	return (lenght);
 }
 
-void	interpret_loop(const struct s_print_handle *handle, char *result, int input_lenght)
+const void	*interpret_loop(const struct s_print_handle *handle, char *result, int input_lenght)
 {
 	int		i;
 	int		ri;
@@ -90,21 +99,22 @@ void	interpret_loop(const struct s_print_handle *handle, char *result, int input
 	pi = 0;
 	while (++i < input_lenght)
 	{
-		if (!handle->input[i])
-			result[ri] = '\0';
-		else if (handle->input[i] != '%')
+		if (handle->input[i] != '%')
 			result[ri++] = handle->input[i];
-		else if (handle->input[i] == '%')
+		else
 		{
-			i += 2;
+			i++;
 			fi = 0;
 			if (handle->parsed_flags == NULL || handle->parsed_flags[pi] == NULL)
 				break ;
+			else if (handle->parsed_flags[pi][fi] == '\0')
+				return (NULL);
 			while(handle->parsed_flags[pi][fi] != '\0')
 				result[ri++] = handle->parsed_flags[pi][fi++];
 			pi++;
 		}
 	}
+	return (handle);
 }
 
 int	interpret_handle(const struct s_print_handle *handle)
@@ -116,11 +126,10 @@ int	interpret_handle(const struct s_print_handle *handle)
 	if (handle->input == NULL)
 		return (0);
 	input_lenght = ft_strlen(handle->input);
-	count = input_lenght - (2 * handle->lenght) + get_parsed_flags_lenght(handle);
-	result = malloc(sizeof(char) * count + 1);
+	count = (input_lenght - (2 * handle->lenght)) + get_parsed_flags_lenght(handle);
+	result = ft_calloc(count + 1, sizeof(char));
 	if (result == NULL)
 		return (0);
-	result[count] = '\0';
 	interpret_loop(handle, result, input_lenght);
 	write(1, result, count);
 	free(result);
@@ -133,6 +142,7 @@ int	ft_printf(const char *str, ...)
 	int						count;
 	struct s_print_handle	*handle;
 	char					*str_copy;
+
 
 	va_start(args, str);
 	str_copy = ft_strdup(str);

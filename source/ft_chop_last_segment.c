@@ -6,7 +6,7 @@
 /*   By: dmoliner <dmoliner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 16:51:06 by dmoliner          #+#    #+#             */
-/*   Updated: 2023/07/20 17:04:32 by dmoliner         ###   ########.fr       */
+/*   Updated: 2023/07/22 21:24:22 by dmoliner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,19 @@ char	*ft_chop_last_segment(char *str, char c)
 		return (NULL);
 	}
 	i += 2;
-	result = malloc(ft_strlen(str) - i + 1);
+	result = ft_calloc(ft_strlen(str) - i + 1, sizeof(char));
 	if (!result)
+	{
+		free(str);
 		return (NULL);
+	}
 	j = 0;
+	if (!str[i])
+	{
+		free(result);
+		free(str);
+		return (NULL);
+	}
 	while (str[i])
 		result[j++] = str[i++];
 	result[j] = '\0';

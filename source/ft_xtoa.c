@@ -6,7 +6,7 @@
 /*   By: dmoliner <dmoliner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/20 16:52:14 by dmoliner          #+#    #+#             */
-/*   Updated: 2023/07/20 16:53:34 by dmoliner         ###   ########.fr       */
+/*   Updated: 2023/07/22 21:25:55 by dmoliner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ char	*ft_xtoa(int x)
 {
 	char	*result;
 
-	result = malloc(2);
+	result = ft_calloc(2, sizeof(char));
 	result[0] = x;
-	result[1] = '\0';
 	return (result);
 }

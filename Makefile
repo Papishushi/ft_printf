@@ -6,7 +6,7 @@
 #    By: dmoliner <dmoliner@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/14 13:12:12 by dmoliner          #+#    #+#              #
-#    Updated: 2023/07/20 16:57:19 by dmoliner         ###   ########.fr        #
+#    Updated: 2023/07/21 21:36:52 by dmoliner         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,6 +68,8 @@ LIBFTSRCS = ft_isalpha.c \
 			ft_lstiter.c \
 			ft_lstmap.c
 
+TEST_NAME = test.exe
+TEST_FILE = main.c
 NAME = libftprintf.a
 CC = gcc
 AR = ar -rcs
@@ -82,6 +84,11 @@ LIBOBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(LIBFTSRCS))
 .PHONY: all clean fclean re
 # Default
 all: ${NAME}
+# Execute Test
+test: $(TEST_NAME)
+
+$(TEST_NAME): all Makefile
+	$(CC) -o $@ $(TEST_FILE) $(LDFLAGS)
 
 # Linking the library
 $(NAME): $(OBJS) $(LIBOBJS) Makefile
